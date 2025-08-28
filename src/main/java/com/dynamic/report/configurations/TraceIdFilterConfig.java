@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class TraceIdFilterConfig {
 
     @Bean
-    public FilterRegistrationBean<TraceIdFilter> internalKeyFilter(RSAService rsaService) {
+    public FilterRegistrationBean<TraceIdFilter> traceIdFilter(RSAService rsaService) {
         FilterRegistrationBean<TraceIdFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new TraceIdFilter(rsaService));
         registrationBean.addUrlPatterns("/*");

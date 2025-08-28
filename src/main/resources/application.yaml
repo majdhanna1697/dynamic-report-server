@@ -46,7 +46,7 @@ rsa:
       -----END PRIVATE KEY-----
   public:
     key: |
-      ----BEGIN PUBLIC KEY-----
+      -----BEGIN PUBLIC KEY-----
       MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqOm+zGyU2jmDlsjVGjzH
       GRKebr0OEs+IxHp27jKA4K3kZwOMi584rKGheRBAyhiAK7fbcgJzO6gW445SVVl7
       7cJ5YWzwbY/yBjwDUyvbujqlmgHSwoM4ApNgEL5gOHnKqZZV2D/tpNM4ejsD1eXh
