@@ -1,0 +1,215 @@
+openapi: 3.0.1
+info:
+  title: dynamic-report-ms swagger
+  version: 1.0.0
+  description: dynamic-report-ms swagger
+
+paths:
+  /login:
+    post:
+      operationId: login
+      summary: Account login
+      description: Authenticates a account using either a username and password or the Authorization header (e.g., Bearer token).
+      tags:
+        - Authentication
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      parameters:
+        - name: Authorization
+          in: header
+          description: Optional Authorization header (Bearer token) for authentication.
+          required: false
+          schema:
+            type: string
+            example: Bearer token123
+      responses:
+        '200':
+          $ref: '#/components/responses/LoginSuccess'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /get-reports:
+    post:
+      operationId: getReports
+      summary: Fetch campaign reports
+      description: Returns aggregated reporting data based on requested dimensions, metrics, filters, paging, and sorting.
+      tags:
+        - Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/ReportSuccess'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "account1"
+        password:
+          type: string
+          format: password
+          example: "pass123"
+
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT or session token
+          example: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+        username:
+          type: string
+          example: "account1"
+
+    ReportRequest:
+      type: object
+      properties:
+        dimensions:
+          type: array
+          items:
+            type: string
+          example: ["country", "platform"]
+        metrics:
+          type: array
+          items:
+            type: string
+          example: ["spent", "clicks"]
+        filters:
+          type: object
+          properties:
+            dateFrom:
+              type: string
+              format: date
+              example: "2023-06-01"
+            dateTo:
+              type: string
+              format: date
+              example: "2023-06-07"
+        paging:
+          type: object
+          properties:
+            page:
+              type: integer
+              example: 1
+            size:
+              type: integer
+              example: 20
+        sorting:
+          type: object
+          properties:
+            field:
+              type: string
+              example: "spent"
+            direction:
+              type: string
+              enum: [asc, desc]
+              example: "desc"
+
+    ReportRow:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        accountId:
+          type: integer
+          format: int64
+          example: 1
+        campaignId:
+          type: integer
+          format: int64
+          example: 1
+        country:
+          type: string
+          example: "US"
+        platform:
+          type: string
+          example: "iOS"
+        browser:
+          type: string
+          example: "Chrome"
+        spent:
+          type: number
+          format: float
+          example: 1234.56
+        impressions:
+          type: integer
+          format: int64
+          example: 250
+        clicks:
+          type: integer
+          format: int64
+          example: 250
+        date:
+          type: string
+          format: date-time
+          example: "2025-08-26T12:00:00Z"
+
+    ReportResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportRow'
+        paging:
+          type: object
+          properties:
+            page:
+              type: integer
+              example: 1
+            size:
+              type: integer
+              example: 20
+            totalPages:
+              type: integer
+              example: 5
+            totalRecords:
+              type: integer
+              format: int64
+              example: 100
+
+  responses:
+    LoginSuccess:
+      description: Login successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LoginResponse'
+
+    ReportSuccess:
+      description: Report successfully retrieved
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReportResponse'
+
+    InvalidRequest:
+      description: Invalid request / missing credentials
+    Unauthorized:
+      description: Unauthorized / invalid credentials
+    ServerError:
+      description: Server error
